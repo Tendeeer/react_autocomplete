@@ -29,8 +29,18 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
   );
 
   const filteredPeople = useMemo(() => {
+    if (appliedQuery === '') {
+      return people;
+    }
+
+    const lowerCaseQuery = appliedQuery.toLowerCase().trim();
+
+    if (lowerCaseQuery === '') {
+      return [];
+    }
+
     return people.filter(person =>
-      person.name.toLowerCase().includes(appliedQuery.toLowerCase().trim()),
+      person.name.toLowerCase().includes(lowerCaseQuery),
     );
   }, [appliedQuery, people]);
 
@@ -44,6 +54,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
             className="input"
             data-cy="search-input"
             value={query}
+            onClick={() => setIsFocused(true)}
             onChange={event => {
               const newQuery = event.target.value;
 
@@ -53,6 +64,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
                 onSelected(null);
               }
 
+              setIsFocused(true);
               applyQuery(newQuery);
             }}
             onFocus={() => setIsFocused(true)}
